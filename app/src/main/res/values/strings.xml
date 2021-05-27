@@ -26,4 +26,5 @@
     <string name="display_price_monthly_rental">$%,.0f/month</string>
     <string name="display_price">$%,.0f</string>
     <string name="best_mars_property">Best Mars property</string>
+    <string name="status_icon">status icon</string>
 </resources>
