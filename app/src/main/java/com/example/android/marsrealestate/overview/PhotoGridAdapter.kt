@@ -26,8 +26,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.marsrealestate.databinding.GridViewItemBinding
 import com.example.android.marsrealestate.network.MarsProperty
 
-class PhotoGridAdapter: ListAdapter<MarsProperty,PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback){
-    companion object DiffCallback: DiffUtil.ItemCallback<MarsProperty>() {
+class PhotoGridAdapter(private val onClickListener: OnClickListener) : ListAdapter<MarsProperty, PhotoGridAdapter.MarsPropertyViewHolder>(DiffCallback) {
+    class OnClickListener(private val clickListener: (marsProperty: MarsProperty) -> Unit) {
+        fun onClick(marsProperty: MarsProperty) = clickListener(marsProperty)
+    }
+
+    companion object DiffCallback : DiffUtil.ItemCallback<MarsProperty>() {
         override fun areItemsTheSame(oldItem: MarsProperty, newItem: MarsProperty): Boolean {
             return oldItem === newItem
         }
@@ -44,13 +48,15 @@ class PhotoGridAdapter: ListAdapter<MarsProperty,PhotoGridAdapter.MarsPropertyVi
     override fun onBindViewHolder(holder: MarsPropertyViewHolder, position: Int) {
         val marsProperty = getItem(position)
         holder.bind(marsProperty)
+        holder.itemView.setOnClickListener { onClickListener.onClick(marsProperty) }
     }
 
-    class MarsPropertyViewHolder private  constructor(private val binding: GridViewItemBinding):RecyclerView.ViewHolder(binding.root) {
+    class MarsPropertyViewHolder private constructor(private val binding: GridViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(marsProperty: MarsProperty) {
             binding.property = marsProperty
             binding.executePendingBindings()
         }
+
         companion object {
             fun from(context: Context): MarsPropertyViewHolder {
                 val binding = GridViewItemBinding.inflate(LayoutInflater.from(context))
